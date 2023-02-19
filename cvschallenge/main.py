@@ -3,11 +3,57 @@
 
 import csv
 import re
+import os
 
+pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9-]+\.[a-zA-Z]{2,}(?:\.[a-zA-Z]{2,})?$'
 def is_valid_email(email):
     # patterns for email address to follow to be valid
-    pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9-]+\.[a-zA-Z]{2,}(?:\.[a-zA-Z]{2,})?$'
     return bool(re.match(pattern, email))
+
+def add_email_to_csv(filename, username, email):
+    """Add a username and email to a CSV file"""
+    with open(filename, 'a', newline='') as csvfile:
+        writer = csv.writer(csvfile)
+        writer.writerow([username, email])
+
+def login():
+    valid_data = []
+    with open('valid_data.csv', 'r') as f:
+        reader = csv.reader(f)
+        for row in reader:
+            valid_data.append(row)
+
+    username = input("Enter your username: ")
+    email = input("Enter your email address: ")
+
+    if not re.match(pattern, email):
+        print("Invalid email address.")
+        return
+
+    for row in valid_data:
+        if row[0] == username and row[1] == email:
+            print("Logged in.")
+            return
+
+    while True:
+        response = input("Username and email combination not found. Try again or create a new account? (try/create/quit): ")
+        if response == "try":
+            login()
+            return
+        elif response == "create":
+            if re.match(pattern, email):
+                with open('valid_data.csv', 'a', newline='') as f:
+                    writer = csv.writer(f)
+                    writer.writerow([username, email])
+                print("Account created.")
+                return
+            else:
+                print("Invalid email address.")
+        elif response == "quit":
+            return
+        else:
+            print("Invalid input. Please try again.")
+
 
 # reads in the mock data
 with open('MOCK_DATA.csv', 'r') as file:
@@ -39,6 +85,8 @@ with open('invalid_data.csv', 'w', newline='') as file:
     writer = csv.writer(file)
     writer.writerow(["username", "email"])
     writer.writerows(invalid_data)
+
+login()
 
 
 

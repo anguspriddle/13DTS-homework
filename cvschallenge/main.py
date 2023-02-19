@@ -1,26 +1,44 @@
+# This program will take valid and invalid emails and their corresponding usernames and place them in seperate,
+# Newly created CSV files.
+
 import csv
 import re
 
-# Makes a variable for what a normal email expression would be
-email_regex = r"[^@]+@[^@]+\.[^@]+"
+def is_valid_email(email):
+    # patterns for email address to follow to be valid
+    pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9-]+\.[a-zA-Z]{2,}(?:\.[a-zA-Z]{2,})?$'
+    return bool(re.match(pattern, email))
 
-# Open the input and output files
-with open('MOCK_DATA.csv', 'r') as infile, open('valid_emails.csv', 'w', newline='') as outfile:
-    reader = csv.reader(infile)
-    writer = csv.writer(outfile)
+# reads in the mock data
+with open('MOCK_DATA.csv', 'r') as file:
+    reader = csv.reader(file)
+    headers = next(reader)  # skips the header
 
-    # Write the header row to the output file
-    writer.writerow(['username', 'email'])
+    # Find the index of the "username" and "email" columns
+    userName_index = headers.index("userName")
+    email_index = headers.index("email")
 
-    # Loop through each row of the input file
+    # Extract the valid emails and their related usernames
+    valid_data = []
+    invalid_data = []
     for row in reader:
-        try:
-            userName, email = row
-            print(row)
-        except ValueError:
-            continue
+        email = row[email_index]
+        if is_valid_email(email):
+            valid_data.append((row[userName_index], email))
+        else:
+            invalid_data.append((row[userName_index], email))
 
-        # Checks if the email is valid
-        if re.match(email_regex, email):
-            # Write the validated email with it's username into the other file
-            writer.writerow([userName, email])
+# Writes only the valid data to a new CSV file
+with open('valid_data.csv', 'w', newline='') as file:
+    writer = csv.writer(file)
+    writer.writerow(["username", "email"])
+    writer.writerows(valid_data)
+
+# Write only the invalid data to a new CSV file
+with open('invalid_data.csv', 'w', newline='') as file:
+    writer = csv.writer(file)
+    writer.writerow(["username", "email"])
+    writer.writerows(invalid_data)
+
+
+

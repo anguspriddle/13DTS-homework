@@ -1,0 +1,29 @@
+import csv
+import re
+
+# Makes a variable for what a normal email expression would be
+names = []
+email = []
+valid_emails = []
+email_regex = r"[^@]+@[^@]+\.[^@]+"
+
+def is_valid_email(email):
+    """Check if an email address follows a valid email format"""
+    pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+    return bool(re.match(pattern, email))
+
+# Open the input and output files
+with open('MOCK_DATA.csv', 'r') as infile, open('valid_emails.csv', 'w', newline='') as outfile:
+    reader = csv.reader(infile)
+    writer = csv.writer(outfile)
+
+    for row in reader:
+        email.append(row[3])
+        names.append(row[0])
+
+    print(email)
+    print(names)
+    for e in email:
+        if is_valid_email(e):
+            valid_emails.append(e)
+    print(valid_emails)

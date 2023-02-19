@@ -1,0 +1,10 @@
+
+import pandas
+data = pandas.read_csv("MOCK_DATA.csv", usecols=["userName", "email"]) # Reads in CSV file, and isolates email and username
+print(data) # Prints the isolated usernames and emails
+rowCount = sum(1 for row in data)
+
+def validEmail():
+    # This functions checks what emails are valid in the database
+    for rowCount in pandas.read_csv("MOCK_DATA.csv", usecols=["email"]):
+        if 

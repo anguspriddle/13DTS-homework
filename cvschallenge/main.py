@@ -3,15 +3,13 @@
 
 import csv
 import re
-import os
-
-pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9-]+\.[a-zA-Z]{2,}(?:\.[a-zA-Z]{2,})?$'
+pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9-]+\.[a-zA-Z]{2,}(?:\.[a-zA-Z]{2,})?$' # The pattern listed follows the normal email conventions
 def is_valid_email(email):
-    # patterns for email address to follow to be valid
+    # checks the email is valid to pattern mentioned before
     return bool(re.match(pattern, email))
 
 def add_email_to_csv(filename, username, email):
-    """Add a username and email to a CSV file"""
+    # Function to add a new email
     with open(filename, 'a', newline='') as csvfile:
         writer = csv.writer(csvfile)
         writer.writerow([username, email])
@@ -60,11 +58,11 @@ with open('MOCK_DATA.csv', 'r') as file:
     reader = csv.reader(file)
     headers = next(reader)  # skips the header
 
-    # Find the index of the "username" and "email" columns
+    # Finds the index of the "username" and "email" columns
     userName_index = headers.index("userName")
     email_index = headers.index("email")
 
-    # Extract the valid emails and their related usernames
+    # Extracts the valid emails and their related usernames
     valid_data = []
     invalid_data = []
     for row in reader:
@@ -86,7 +84,7 @@ with open('invalid_data.csv', 'w', newline='') as file:
     writer.writerow(["username", "email"])
     writer.writerows(invalid_data)
 
-login()
+login() # runs main login function
 
 
 
